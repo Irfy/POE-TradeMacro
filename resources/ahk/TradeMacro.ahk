@@ -1487,7 +1487,7 @@ TradeFunc_ParseCurrencyHtml(html, payload, ParsingError = "") {
 	NoOfItemsToShow := TradeOpts.ShowItemResults
 
 	Title .= StrPad("IGN" ,10)
-	Title .= StrPad("| Ratio",20)
+	Title .= StrPad("| Ratio",26)
 	Title .= "| " . StrPad("Buy  ",20, "Left")
 	Title .= StrPad("Pay",18)
 	Title .= StrPad("| Stock",8)
@@ -1510,8 +1510,31 @@ TradeFunc_ParseCurrencyHtml(html, payload, ParsingError = "") {
 		BuyCurrency := TradeUtils.StrX( Offer,  "data-buycurrency=""",  1,18, """"        , 1,1, T )
 		AccountName := TradeUtils.StrX( Offer,  "data-ign=""",          1,10, """"        , 1,1    )
 
+		SetFormat, float, 0.4
 		RatioBuying := BuyValue / SellValue
-		RatioSelling  := SellValue / BuyValue
+		InvRatio := SellValue / BuyValue
+
+		If (RatioBuying >= 1000) {
+			SetFormat, float, 0.0
+			RatioBuying += 0
+		} Else If (RatioBuying >= 100) {
+			SetFormat, float, 0.2
+			RatioBuying += 0
+		} Else If (RatioBuying >= 10) {
+			SetFormat, float, 0.3
+			RatioBuying += 0
+		} ; Else original value with 0.4
+
+		If (InvRatio >= 1000) {
+			SetFormat, float, 0.0
+			InvRatio += 0
+		} Else If (InvRatio >= 100) {
+			SetFormat, float, 0.2
+			InvRatio += 0
+		} Else If (InvRatio >= 10) {
+			SetFormat, float, 0.3
+			InvRatio += 0
+		} ; Else original value with 0.4
 
 		Pos   := RegExMatch(Offer, "si)displayoffer-bottom(.*)", StockMatch)
 		Loop, Parse, StockMatch, `n, `r
@@ -1538,7 +1561,7 @@ TradeFunc_ParseCurrencyHtml(html, payload, ParsingError = "") {
 
 		subAcc := TradeFunc_TrimNames(AccountName, 10, true)
 		Title .= StrPad(subAcc,10)
-		Title .= StrPad("| " . "1 <-- " . TradeUtils.ZeroTrim(RatioBuying)            ,20)
+		Title .= StrPad("| " . "1 : " . StrPad(TradeUtils.ZeroTrim(RatioBuying), 6) . " (" . StrPad(TradeUtils.ZeroTrim(InvRatio), 6) . " : 1)", 26)
 		Title .= StrPad("| " . StrPad(DisplayNames[1] . " " . StrPad(TradeUtils.ZeroTrim(SellValue), 4, "left"), 17, "left") ,20)
 		Title .= StrPad("<= " . StrPad(TradeUtils.ZeroTrim(BuyValue), 4) . " " . DisplayNames[3] ,20)
 		Title .= StrPad("| " . Stock,8)

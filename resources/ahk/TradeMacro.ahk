@@ -6147,11 +6147,18 @@ TradeFunc_ChangeLeague() {
 	}
 
 	; Select previous league in the list, except on first iteration -- in that case, select the last league (wrap-around).
+	Local CurrentSearchLeague := SearchLeague
+	RepeatLeagueSearch:
 	Local NewSearchLeague := ""
 	For key, val in TradeGlobals.Get("Leagues") {
-		If (SearchLeague == key and NewSearchLeague != "")
+		If (CurrentSearchLeague == key and NewSearchLeague != "")
 			Break
 		NewSearchLeague := key
+	}
+	; select the latest league in the list which is not hardcore
+	If InStr(NewSearchLeague, "ardcore") {
+		CurrentSearchLeague := NewSearchLeague
+		GoTo RepeatLeagueSearch
 	}
 
 	; Call Submit for the settings UI, otherwise we can't set the new league if the UI was last closed via close button or "x"

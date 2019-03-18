@@ -137,8 +137,19 @@ global overwrittenUserFiles	:= argumentOverwrittenFiles
 ; }
 
 TradeGlobals.Set("Leagues", TradeFunc_GetLeagues())
+tmp := []
+For key, _ in TradeGlobals.Get("Leagues")
+	tmp.Insert(1, key)
+TradeGlobals.Set("LeagueKeysReversed", tmp)
 Sleep, 200
 ReadTradeConfig("", "config_trade.ini", _updateConfigWrite)
+
+If (TradeOpts.AllowedSearchLeagues != "") { ; convert comma separated list to a hash like: value => true
+	tmp := {}
+	For idx, league in StrSplit(TradeOpts.AllowedSearchLeagues, ",")
+		tmp[league] := True
+	TradeGlobals.Set("AllowedSearchLeagues", tmp)
+}
 
 TradeFunc_CheckIfCloudFlareBypassNeeded()
 ; call it again (TradeFunc_CheckIfCloudFlareBypassNeeded reads poetrades available leagues but can't be called before the first TradeFunc_GetLeagues call at the moment (bad coding))

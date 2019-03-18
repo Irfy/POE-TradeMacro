@@ -6146,19 +6146,28 @@ TradeFunc_ChangeLeague() {
 		Return
 	}
 
-	; Select previous league in the list, except on first iteration -- in that case, select the last league (wrap-around).
-	Local CurrentSearchLeague := SearchLeague
-	RepeatLeagueSearch:
-	Local NewSearchLeague := ""
-	For key, val in TradeGlobals.Get("Leagues") {
-		If (CurrentSearchLeague == key and NewSearchLeague != "")
-			Break
-		NewSearchLeague := key
+	Local found := False, allowed := TradeGlobals.Get("AllowedSearchLeagues"), league_keys := TradeGlobals.Get("LeagueKeysReversed"), nLeagues := league_keys.MaxIndex(), NewSearchLeague
+	For current_idx, key in TradeGlobals.Get("LeagueKeysReversed") {
+		if (key = SearchLeague) {
+			found := True
+			break
+		}
 	}
-	; select the latest league in the list which is not hardcore
-	If InStr(NewSearchLeague, "ardcore") {
-		CurrentSearchLeague := NewSearchLeague
-		GoTo RepeatLeagueSearch
+	If (!found) {
+		MsgBox, 0x10, Error, Couldn't find current league (%SearchLeague%) by key`, aborting change!
+		Return
+	}
+	found := False
+	Loop % nLeagues + 1 { ; limit number of iterations to the number of leagues + 1: if no league is allowed, +1 will select the next unrestricted league as fallback
+		NewSearchLeague := league_keys[1 + Mod(current_idx + A_Index - 1, nLeagues)] ; next with wrap-around
+		If (allowed = "" || allowed[NewSearchLeague]) { ; none configured, or this league allowed
+			found := True
+			break
+		}
+	}
+	If (!found) {
+		MsgBox, 0x10, Error, Ignoring misconfigured AllowedSearchLeagues (%AllowedSearchLeagues%).`nFix the parameter in your config file (config_trade.ini).`nAllowedSearchLeagues will be ignored until script restart.
+		TradeGlobals.Set("AllowedSearchLeagues", "")
 	}
 
 	; Call Submit for the settings UI, otherwise we can't set the new league if the UI was last closed via close button or "x"

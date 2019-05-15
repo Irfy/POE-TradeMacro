@@ -692,7 +692,8 @@ CreateTradeSettingsUI() {
 
 	GuiAddText("Secondary Currency:", "x337 yp+30 w160 h20 0x0100", "LblCurrencySearchHave2", "LblCurrencySearchHave2H", "", "", "SettingsUI")
 	AddToolTip(LblCurrencySearchHave2H, "This setting sets the currency that you`nwant to use as ""have"" when searching for`nthe above selected currency.")
-	GuiAddDropDownList(CurrencyList, "x+10 yp-4", TradeOpts.CurrencySearchHave2, "CurrencySearchHave2", "CurrencySearchHave2H", "", "", "SettingsUI")
+	GuiAddDropDownList("Exalted Orb|Orb of Annulment|Vaal Orb|Orb of Regret|Orb of Scouring|Cartographers Chisel", "x+10 yp-4", TradeOpts.CurrencySearchHave2, "CurrencySearchHave2", "CurrencySearchHave2H", "", "", "SettingsUI")
+; |Ancient Orb|Annulment Shard|Apprentice Cartographers Sextant|Armourers Scrap|Blacksmiths Whetstone|Blessed Orb|Cartographers Chisel|Chaos Orb|Chromatic Orb|Divine Orb|Eternal Orb|Exalted Orb|Exalted Shard|Gemcutters Prism|Glassblowers Bauble|Harbinger's Orb|Jewellers Orb|Journeyman Cartographers Sextant|Master Cartographers Sextant|Mirror of Kalandra|Mirror Shard|Orb of Binding|Orb of Alchemy|Orb of Alteration|Orb of Annulment|Orb of Augmentation|Orb of Chance|Orb of Fusing|Orb of Horizons|Orb of Regret|Orb of Scouring|Orb of Transmutation|Perandus Coin|Portal Scroll|Regal Orb|Scroll of Wisdom|Silver Coin|Vaal Orb
 
 	; option group start
 	GuiAddCheckbox("Use the ""exact currency"" option.", "x337 yp+27 w280 h20", TradeOpts.ExactCurrencySearch, "ExactCurrencySearch", "ExactCurrencySearchH", "", "", "SettingsUI")
